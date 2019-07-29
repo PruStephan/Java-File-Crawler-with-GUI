@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Crawler {
 
@@ -23,7 +24,7 @@ public class Crawler {
                 //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));
                 return true;
             }
-            oldBuffer = curBuffer;
+            oldBuffer = Arrays.copyOfRange(curBuffer, 0, curBuffer.length);
         }
         if(textSearch.kmpMatcher(new String(oldBuffer) + new String(curBuffer)) != -1) {
             //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));

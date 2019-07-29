@@ -61,10 +61,13 @@ public class CrawlController {
                 AlertBox.display("Alert!", "You should write text for program to search");
                 return;
             }
-            if(curFile == null) {
+            if(curFile == null && startFolderField.getText().equals("")) {
                 AlertBox.display("Alert!", "You should choose root folder");
                 return;
             }
+
+            if(curFile == null)
+                curFile = new File(startFolderField.getText());
 
             String extension = extensionField.getText();
             if(extension == null)

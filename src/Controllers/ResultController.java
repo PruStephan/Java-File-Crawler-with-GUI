@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Utils.AlertBox;
 import Utils.Tree;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -54,7 +55,7 @@ public class ResultController {
                 textPreview.setText(textPreview.getText() + s + "\n");
             }
         } catch (IOException e){
-            e.printStackTrace();
+            AlertBox.display("Alert!", "Couldn't open file properly\nFile: " + file.getName());
         }
     }
 

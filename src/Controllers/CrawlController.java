@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Utils.AlertBox;
 import Utils.Crawler;
 import Utils.Tree;
 import javafx.fxml.FXML;
@@ -55,6 +56,15 @@ public class CrawlController {
         });
 
         searchButton.setOnAction(actionEvent -> {
+            if(textField.getText().equals(""))
+            {
+                AlertBox.display("Alert!", "You should write text for program to search");
+                return;
+            }
+            if(curFile == null) {
+                AlertBox.display("Alert!", "You should choose root folder");
+                return;
+            }
 
             String extension = extensionField.getText();
             if(extension == null)
@@ -70,6 +80,7 @@ public class CrawlController {
                 loader.load();
             } catch (Exception e) {
                 e.printStackTrace();
+                return;
             }
 
 

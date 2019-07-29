@@ -13,32 +13,36 @@ public class Crawler {
     private static TextSearch textSearch;
     private static ArrayList<Path> files = new ArrayList<>();
 
-    public static boolean FileSearch(Path path, String text) throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader(path.toString()));
-        char[] oldBuffer = new char[1024];
-        char[] curBuffer = new char[1024];
+    public static boolean FileSearch(Path path, String text) {
+        try(BufferedReader br = new BufferedReader(new FileReader(path.toString()))) {
+            char[] oldBuffer = new char[1024];
+            char[] curBuffer = new char[1024];
 
-        br.read(oldBuffer);
-        while(br.read(curBuffer) != -1) {
-            if(textSearch.kmpMatcher(new String(oldBuffer) + new String(curBuffer)) != -1) {
+            br.read(oldBuffer);
+            while (br.read(curBuffer) != -1) {
+                if (textSearch.kmpMatcher(new String(oldBuffer) + new String(curBuffer)) != -1) {
+                    //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));
+                    return true;
+                }
+                oldBuffer = Arrays.copyOfRange(curBuffer, 0, curBuffer.length);
+            }
+            if (textSearch.kmpMatcher(new String(oldBuffer) + new String(curBuffer)) != -1) {
                 //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));
                 return true;
             }
-            oldBuffer = Arrays.copyOfRange(curBuffer, 0, curBuffer.length);
+            return false;
+        } catch (IOException e) {
+            AlertBox.display("Alert!", "Couldn't open file properly\nFile: " + path.toString());
+            return false;
         }
-        if(textSearch.kmpMatcher(new String(oldBuffer) + new String(curBuffer)) != -1) {
-            //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));
-            return true;
-        }
-        return false;
     }
 
     public static boolean crawlerDfs(Path path, String pattern, String extension, Tree tree) {
         File file = new File(path.toString());
-        if(file.isDirectory()) {
+        if (file.isDirectory()) {
             File[] fileList = file.listFiles();
             boolean ans = false;
-            if(fileList != null) {
+            if (fileList != null) {
                 for (File file1 : fileList) {
                     Tree cur = new Tree(file1.getName(), new ArrayList<>());
                     if (crawlerDfs(file1.toPath(), pattern, extension, cur)) {
@@ -48,18 +52,12 @@ public class Crawler {
                 }
                 return ans;
             }
-        }
-        else {
-            if(file.getPath().endsWith("."  + extension)) {
-                try  {
-                    if(FileSearch(path, pattern)) {
-                        //tree.children.add(new Tree(path.getFileName().toString(), new ArrayList<>()));
-                        return true;
-                    }
-                    return false;
-                } catch (IOException e) {
-                    e.printStackTrace();
+        } else {
+            if (file.getPath().endsWith("." + extension)) {
+                if (FileSearch(path, pattern)) {
+                    return true;
                 }
+                return false;
             }
         }
         return false;
